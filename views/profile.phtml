@@ -1,0 +1,148 @@
+<style>
+  .profile {
+  
+   
+    margin: 0 auto; /* Canh giữa phần nội dung */
+  
+}
+
+.profile h3 {
+    font-size: 20px;
+    color: #333;
+    margin:0;
+}
+
+.profile span {
+    display: block;
+    font-size: 18px;
+    color: #666;
+
+}
+
+
+.paper-list {
+    max-width: 800px; /* Giới hạn chiều rộng */
+    margin: 0 auto; /* Canh giữa phần nội dung */
+}
+
+.paper-list h3 {
+    font-size: 20px;
+    color: #333;
+
+}
+
+.paper-item {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.paper-item span {
+    display: block;
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+
+</style>
+
+<div style="text-align: center; padding-bottom:30px;">
+            <h1>PROFILE</h1>
+</div>
+<div  style="display: flex; justify-content: center; text-align: center;">
+    <div class="profile">
+        <div style="padding-bottom:20px ;">
+            <h3>FULL NAME</h3>
+            <span><?php echo $author[0]->full_name ?></span>
+        </div>
+        <?php
+        if(!empty($author[0]) ){
+            $profile_data = json_decode($author[0]->profile_json_text, true);
+
+            if ($profile_data['bio']){
+                echo "<div style=\"padding-bottom:20px ;\">
+                <h3>BIO</h3>
+                <span>" .$profile_data['bio']."</span>
+            </div>";
+            }
+            else{
+                echo "<div style=\"padding-bottom:20px ;\">
+                <h3>BIO</h3>
+                <span>Update soon...</span></div>";
+            }
+
+            if ($profile_data['interests']){
+                echo "<div style=\"padding-bottom:20px ;\">
+                <h3>INTERESTS</h3>";
+
+                foreach ($profile_data['interests'] as $item){
+                    echo "<span>" .$item."</span>" ;
+                }
+                echo "</div>";
+            }
+            else{
+                echo "<div style=\"padding-bottom:20px ;\">
+                <h3>INTERESTS</h3>
+                <span>Update soon...</span></div>";
+            }
+
+            if (!empty($profile_data['education'])){
+                echo "<div style=\"padding-bottom:20px ;\">
+                <h3>EDUCATION</h3>";
+
+                foreach ($profile_data['education'] as $item){
+                    echo "<span>" .$item."</span>" ;
+                }
+                echo "</div>";
+            }
+            else{
+                echo "<div style=\"padding-bottom:20px ;\">
+                <h3>EDUCATION</h3>
+                <span>Update soon...</span></div>";
+            }
+
+            if (!empty($profile_data['work_experiences'])){
+                echo "<div style=\"padding-bottom:20px ;\">
+                <h3>WORK EXPERIENCES</h3>";
+
+                foreach ($profile_data['work_experiences'] as $item){
+                    echo "<span>" .$item."</span>" ;
+                }
+                echo "</div>";
+            }
+            else{
+                echo "<div style=\"padding-bottom:20px ;\">
+                <h3>WORK EXPERIENCES</h3>
+                <span>Update soon...</span></div>";
+            }
+
+            
+        }
+        ?>
+         <div style="padding-bottom:20px ;">
+            <h3>WESITE</h3>
+            <span><?php echo $author[0]->website ?></span>
+        </div>
+    </div>
+    <div class="paper-list">
+        <h3>LIST PAPER</h3>
+        <?php 
+       
+            $i = 1;
+            foreach ($listpaper as $item)
+            {
+                
+                print " <div class=\"paper-item\">
+                <span>$i. Title: $item->title </span>
+                <span>Role: $item->role</span>
+                <span>Date: $item->date_added</span>
+                </div>";
+                $i += 1;
+            }
+        ?>
+       
+    </div>
+</div>

@@ -1,0 +1,309 @@
+<?php
+   session_start();
+if (isset($_SESSION['user'])) {
+
+ 
+    $user = $_SESSION['user'];
+
+ 
+    $username = $user->username; 
+    $userId = $user->user_id; 
+    if (!isset($_SESSION['alertShown'])) {
+   
+        $_SESSION['alertShown'] = true;
+
+
+        echo "<script>alert('Welcome, " . $username . "! You are logged in.');</script>";
+    }
+}
+
+
+?>
+
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20127170_BaiTap2</title>
+    <!-- <link rel="stylesheet" href="assets/css/style_layout.css"> -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+        
+    <style>
+     
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
+    background-color: #f9f9f9;
+}
+
+/* HEADER */
+.header {
+    background-color: #fff;
+    padding: 20px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.head1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px 20px 50px;
+}
+
+.head1 h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+}
+
+.search input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    font-size: 14px;
+}
+
+.search button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.head2 {
+    background-color: #f0f0f0;
+    padding: 10px 0;
+}
+
+.head2 ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+}
+
+.head2 li {
+    margin-right: 10px;
+}
+
+.head2 li a {
+    text-decoration: none;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.head2 li a:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* FOOTER */
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000; 
+}
+
+.footer p {
+    margin: 5px 0;
+}
+
+.footer .foo_2 {
+    margin: 0 100px;
+}
+
+/* CONTENT */
+.content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.content h3 {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .head1 {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .head1 h1 {
+        margin-bottom: 10px;
+    }
+
+    .search input[type="text"] {
+        width: 100%;
+    }
+
+    .head2 ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .head2 li {
+        margin-bottom: 10px;
+    }
+}
+
+    </style>
+    <script type="text/javascript" language="javascript">
+
+    var xmlHttp;
+    function CreateXMLHttpRequest()
+    {
+    if ( window.XMLHttpRequest )
+    {
+    // code for IE7+, Firefox, Chrome, Opera, Safari
+    return new XMLHttpRequest()
+    }
+    else if (window.ActiveXObject )
+    {
+    // code for IE6, IE5
+    return new ActiveXObject("Microsoft.XMLHTTP")
+    }
+    }
+        
+        
+    function btnSearch()
+    {
+        //alert('');
+        xmlHttp = CreateXMLHttpRequest();
+        
+        xmlHttp.onreadystatechange = showResult;
+        
+        var keyword = document.getElementById('key_search').value;
+        
+        if (keyword.trim() === "") {
+            alert("Vui lòng nhập từ khóa để tìm kiếm.");
+        } else {
+        var serverURL = 'index.php?search=' + encodeURI(keyword);
+
+        xmlHttp.open("get", serverURL, true);
+        
+        xmlHttp.send();}
+        
+    }
+
+    function showResult()
+    {
+        if(xmlHttp.readyState == 4 && xmlHttp.status == 200)
+        {
+            var kq = xmlHttp.responseText;
+                                    
+            document.getElementById("content").innerHTML = kq;
+
+        }
+    }
+
+    </script>
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <div class="head1">
+              
+            
+                <div><h1>PUBLICATION</h1></div>
+                
+                    <div class="search"> 
+                        
+                        <input   type="text" id="key_search" name="key_search" placeholder="Input author, paper,...." >
+                        <button  onclick="btnSearch();"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        
+                    </div>
+                
+                <div>
+                    <?php
+                        if(isset($_SESSION['user'])){
+                            print "<a style=\"margin-right:10px;\" href=\"index.php?action=info&profileID=" . $_SESSION['user']->user_id . "\"><i class=\"fa-solid fa-circle-info\"></i>&nbspInfor</a>";
+                            print "<span><i class=\"fa-solid fa-user\"></i> Hi " . $_SESSION['user']->username . " </span>";
+                        }
+                        else{
+                          print "<a style=\"margin-right:10px;\" href=\"index.php\" onclick=\"alert('Bạn hãy đăng nhập');\"><i class=\"fa-solid fa-circle-info\"></i>&nbspInfor</a>";
+                          print "<a href=\"index.php?action=login\"><i class=\"fa-solid fa-right-to-bracket\"></i>&nbsp Login</a>";
+                        }
+                    ?>
+                    
+                </div>
+            </div>
+           
+
+            <div class="head2">
+                <ul>
+                    <li><a href="index.php">Home</a></li>
+                    <?php
+                        foreach ($listTopic as $item) {
+                            print "<li><a href=\"index.php?action=$item->topic_id\">$item->topic_name</a></li>";
+                        }
+                    ?>
+                    <!-- <li><a href="index.php?action=search">Search</a></li> -->
+                      
+                </ul>
+            </div> 
+        </div>
+
+
+        <div class="content" id="content" >
+            <?php require($VIEW); ?>
+        </div>
+
+
+        <div class="footer">
+            <div class="foo_1">
+                <strong style="margin:0;">PUBLICATION</strong><br>
+                <p style="margin:0;">Application that allows users to add article information,<br> participation information and
+                    Search articles.</p>
+            </div>
+            <div class="foo_2">
+                <strong style="margin:0;">CONTACT US</strong><br>
+                <p style="margin:0;">51 Phạm Văn Chiêu, Phường 14, Quận Gò Vấp, TPHCM</p>
+                <p style="margin:0;"><i class="fa-solid fa-phone"></i>&nbsp; 0398668523</p>
+                <p style="margin:0;"><i class="fa-solid fa-envelope"></i> &nbsp; publication@gmail.com</p>
+            </div>
+            <div class="foo_3">
+                <strong style="margin:0;">FOLLOW US</strong><br>
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+</html>
+

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20127170_BaiTap2</title>
+ 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body{
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container{
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            padding: 15px;
+            border: 1px solid skyblue;
+            border-radius: 5px;
+            text-align: center;
+        }
+        input{
+            margin: 5px 0px;
+            height: 35px;
+            padding: 7px;
+        }
+        .button{
+            height: 35px;
+            margin: 5px 0px;
+            background-color: skyblue;
+            border: none;
+            border-radius: 5px;
+            color: #333;
+        }
+        .button:hover{
+            background-color: #333;
+            color: skyblue;
+        }
+    </style>
+</head>
+<body>
+    <form class="container" action="index.php?action=checkLogin" method="post">
+        <h1>LOGIN</h1>
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <input class="button" type="submit" name="btnLogin" value="Login" />
+        <span>Don't have an account? <a href="#">Sign up</a></span>
+
+        
+        
+        <?php
+
+            if (isset($message) && !empty($message)) {
+                print "<p style=\"color: " . (($isLoginSuccessful ?? false) ? 'green' : 'red') . ";\">";
+                print $message;
+                print "</p>";
+            }
+
+        ?>
+    </form>
+       
+
+</body>
+
+</html>

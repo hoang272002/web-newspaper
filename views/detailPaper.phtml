@@ -1,0 +1,222 @@
+<?php session_start(); ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20127170_BaiTap2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.container h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #333;
+}
+
+.paper-details {
+    margin-top: 10px;
+}
+
+.detail-row {
+    margin-bottom: 10px;
+}
+
+.detail-row strong {
+    font-weight: bold;
+    margin-right: 5px;
+    color: #333;
+}
+
+.button {
+    height: 35px;
+    margin-top: 10px;
+    background-color: skyblue;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #333;
+}
+
+.message-container {
+    margin-top: 10px;
+}
+
+.message {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.message-brown {
+    color: brown;
+}
+
+.message-green {
+    color: green;
+}
+
+.message-red {
+    color: red;
+}
+
+.author-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.author-table th, .author-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.author-table th {
+    background-color: #f2f2f2;
+}
+
+.author-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.author-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.delete-btn:hover {
+    color: darkred;
+}
+
+.delete-btn i {
+    pointer-events: none; /* Ensure icon cannot be clicked */
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><?php echo $paper[0]->title ?></h2>
+        <div class="paper-details">
+            <div class="detail-row">
+                <strong>Authors:</strong> <?php echo $paper[0]->author_string_list ?>
+            </div>
+            <div class="detail-row">
+                <strong>Abstract:</strong> <?php echo $paper[0]->abstract ?>
+            </div>
+            <div class="detail-row">
+                <strong>Topic:</strong> <?php echo $topic[0]->topic_name ?>
+            </div>
+            <div class="detail-row">
+                <strong>Conferences:</strong> <?php echo $confer[0]->abbreviation ?>
+            </div>
+            <div class="detail-row">
+                <strong>List participations:</strong> 
+                <?php if (!empty($listPar)): ?>
+                    <?php foreach ($listPar as $index => $item): ?>
+                        <?php echo $item->full_name . "-" . $item->role; ?>
+                        <?php if ($index !== count($listPar) - 1): ?>
+                            <?php echo "; "; ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    No participations found.
+                <?php endif; ?>
+            </div>
+            
+            <?php if (isset($_SESSION['user'])): ?>
+                <form action="index.php?action=addMember" method="POST" class="action-form">
+                    <input type="hidden" name="authorID" value="<?php echo $_SESSION['user']->user_id; ?>">
+                    <input type="hidden" name="paperID" value="<?php echo $paper[0]->paper_id; ?>">
+                    <input type="hidden" name="list_author" value="<?php echo $paper[0]->author_string_list; ?>">
+                    <button type="submit" name="btnAddMember" class="button" style="padding:10px;"><strong>Join as a member</strong></button>
+                </form>
+            <?php endif; ?>
+            
+            <?php if (isset($_SESSION['user']) && $_SESSION['user']->user_type == "admin"): ?>
+                <div class="admin-actions">
+                    
+                    <table class="author-table">
+                        <tr>
+                            <th>Author Name</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                        <?php foreach ($listPar as $author): ?>
+                            <form action="index.php?action=deleteMember" method="POST">
+                                <input type="hidden" name="authorID" value="<?php echo $author->user_id; ?>">
+                                <input type="hidden" name="paperID" value="<?php echo $author->paper_id; ?>">
+                                <input type="hidden" name="list_author" value="<?php echo $paper[0]->author_string_list; ?>">
+                                <input type="hidden" name="authorName" value="<?php echo $author->full_name; ?>">
+                                <tr>
+                                    <td><?php echo $author->full_name; ?></td>
+                                    <td><?php echo $author->role; ?></td>
+                                    <td>
+                                        <button type="submit" class="delete-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </form>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+            <?php endif; ?>
+            
+            <?php if (!empty($mess)): ?>
+                <div class="message-container">
+                    <div class="message <?php echo ($mess === "You already add in member!!") ? 'message-brown' : (($mess === "Update successfull!!") ? 'message-green' : 'message-red'); ?>">
+                        <?php echo $mess; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <form action="index.php" method="GET" class="action-form"> 
+                <button type="submit" class="button" style="padding: 10px;"><strong>Back to home    </strong></button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

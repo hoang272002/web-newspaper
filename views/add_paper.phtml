@@ -1,0 +1,221 @@
+<style>
+      h1 {
+            text-align: center;
+      
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form div {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        form input[type="text"],
+        form select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #45a049;
+        }
+
+        .author-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .author-table th,
+        .author-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .author-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .author-table td button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .author-table td button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+<script>
+// Check if there is a success message stored in session
+<?php
+session_start();
+if (isset($_SESSION['success_message'])) {
+    $success_message = $_SESSION['success_message'];
+    echo "alert('$success_message');";
+    // Unset the session variable after displaying the message
+    unset($_SESSION['success_message']);
+}
+?>
+</script>
+
+<div>
+            <h1>ADD PAPER</h1>
+</div>
+
+
+<form id="paperForm" action="index.php?action=addPaperByUser&authorID=<?php echo $author[0]->user_id ?>" method="POST">
+    <div style="display: inline-block; justify-content: center; text-align: center;">
+        <div style="text-align: left;">
+            <span><strong>INFO PAPER</strong></span><br>
+            <span>Title</span>
+            <input  type="text" name="title" placeholder="Input title" required><br>
+            <span>Abstract</span>
+            <input  type="text" name="abstract" placeholder="Input abstract" required><br>
+            <span>Conference: </span>
+            <select name="conference">
+                <?php 
+                // Assume $listConfer is already defined and populated
+                foreach ($listConfer as $confer) {
+                    echo "<option value=\"$confer->conference_id\">$confer->abbreviation</option>";
+                }
+                ?>
+            </select><br>
+            <span>Topic: </span>
+            <select name="topic">
+                <?php 
+                // Assume $listTopic is already defined and populated
+                foreach ($listTopic as $topic) {
+                    echo "<option value=\"$topic->topic_id\">$topic->topic_name</option>";
+                }
+                ?>
+            </select>
+        </div>
+
+        <div style="text-align: left; margin-top:20px;">
+            <span><strong>LIST MEMBER</strong></span><br>
+            <span>Author: </span>
+            <select id="authorSelect">
+                <?php
+                // Assume $listAuthor is already defined and populated
+                foreach ($listAuthor as $author) {
+                    echo "<option value=\"$author->user_id\">$author->full_name</option>";
+                }
+                ?>
+            </select><br>
+            <span>Role: </span>
+            <select id="roleSelect">
+                <option value="member">member</option>
+                <option value="first_author">first_author</option>
+            </select><br>
+
+            <button type="button" id="addAuthorButton">Add Author</button>
+            <table id="authorTable" class="author-table">
+                <tr>
+                    <th>Author Name</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+            </table>
+        </div>
+
+        <input type="hidden" name="author_data" id="author_data">
+        <button type="submit" name="btnAddPaper">Submit</button>
+    </div>
+</form>
+
+<script>
+document.getElementById('addAuthorButton').addEventListener('click', function() {
+    var authorSelect = document.getElementById('authorSelect');
+    var roleSelect = document.getElementById('roleSelect');
+    
+    var authorID = authorSelect.value;
+    var authorName = authorSelect.options[authorSelect.selectedIndex].text;
+    var role = roleSelect.value;
+
+    var table = document.getElementById('authorTable');
+    var rows = table.rows;
+
+    // Check if the author is already added
+    for (var i = 1; i < rows.length; i++) {
+        if (rows[i].dataset.authorId === authorID) {
+            alert('This author is already added.');
+            return;
+        }
+    }
+
+    // Check if the role of first_author is already taken
+    for (var i = 1; i < rows.length; i++) {
+        if (rows[i].dataset.role === 'first_author' && role === 'first_author') {
+            alert('Only one first author is allowed.');
+            return;
+        }
+    }
+
+    var newRow = table.insertRow();
+    
+    var cell1 = newRow.insertCell(0);
+    var cell2 = newRow.insertCell(1);
+    var cell3 = newRow.insertCell(2);
+    
+    cell1.innerHTML = authorName;
+    cell2.innerHTML = role;
+    cell3.innerHTML = '<button type="button" onclick="removeAuthor(this)">Remove</button>';
+    
+    newRow.dataset.authorId = authorID;
+    newRow.dataset.role = role;
+    newRow.dataset.authorName = authorName;
+
+    updateAuthorData();
+});
+
+function removeAuthor(button) {
+    var row = button.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+    updateAuthorData();
+}
+
+function updateAuthorData() {
+    var table = document.getElementById('authorTable');
+    var authorData = [];
+
+    for (var i = 1, row; row = table.rows[i]; i++) {
+        var authorID = row.dataset.authorId;
+        var authorName = row.dataset.authorName;
+        var role = row.dataset.role;
+        authorData.push({ authorID: authorID, authorName: authorName, role: role });
+    }
+
+    document.getElementById('author_data').value = JSON.stringify(authorData);
+}
+</script>
+
+
+
+

@@ -1,0 +1,59 @@
+
+<style>
+    .paper-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Khoảng cách giữa các paper-item */
+    justify-content: center;
+    align-items: center;
+}
+
+.paper-item {
+    width: calc(30%); /* Độ rộng của mỗi paper-item, tính toán cho responsive */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.paper-item:hover {
+    transform: translateY(-5px); /* Hiệu ứng khi hover */
+}
+
+.paper-content {
+    font-size: 14px;
+    color: #666;
+}
+
+.paper-content span {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.paper-item a {
+    text-decoration: none;
+    color: #333;
+}
+
+.paper-item a:hover {
+    text-decoration: underline;
+}
+
+</style>
+<div>
+</div>
+<div class="paper-list">
+    <?php 
+    foreach ($list as $paper){
+        echo '<div class="paper-item">';
+        echo '<a href="index.php?action=detailPaper&paperID=' . $paper->paper_id . '">';
+        echo '<div class="paper-content">';
+        echo '<span>Title: ' . $paper->title . '</span><br>';
+        echo '<span>Authors: ' . $paper->author_string_list . '</span>';
+        echo '</div>';
+        echo '</a>';
+        echo '</div>';
+    }
+    ?>
+</div>

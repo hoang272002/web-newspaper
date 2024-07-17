@@ -1,0 +1,121 @@
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.update-profile-container {
+    max-width: 600px;
+    margin:  auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: ;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"],
+input[type="file"],
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.message {
+    color: red;
+    text-align: center;
+    margin-top: 15px;
+}
+
+</style>
+<div class="update-profile-container">
+    <h1>UPDATE PROFILE</h1>
+    <div class="form-container">
+        <form action="index.php?action=updateProfile" method="POST" enctype="multipart/form-data">
+            <label for="fullname">FULL NAME</label>
+            <input type="text" id="fullname" name="fullname" value="<?php echo $author[0]->full_name ?>"> <br>
+            
+            <input type="hidden" name="profile_json_text" value="<?php echo $author[0]->profile_json_text;?>"> 
+            <input type="hidden" name="userid" value="<?php echo $author[0]->user_id;?>"> 
+            
+            <label for="bio">BIO</label>
+            <input type="text" id="bio" name="bio" value="<?php 
+             $profile_data = json_decode($author[0]->profile_json_text, true);
+             echo $profile_data['bio'];
+            ?>"> <br>
+
+            <label for="interests">INTERESTS</label>
+            <input type="text" id="interests" name="interests" value="<?php 
+             $profile_data = json_decode($author[0]->profile_json_text, true);
+             echo implode(',', $profile_data['interests']);
+            ?>"> <br>
+
+            <label for="education">EDUCATION</label>
+            <input type="text" id="education" name="education" value="<?php 
+             $profile_data = json_decode($author[0]->profile_json_text, true);
+        
+             if(!empty($profile_data['education'])){
+                echo implode(',', $profile_data['education']);
+             }
+             
+            ?>"> <br>
+
+            <label for="work_experiences">WORK EXPERIENCES</label>
+            <input type="text" id="work_experiences" name="work_experiences" value="<?php 
+             $profile_data = json_decode($author[0]->profile_json_text, true);
+             
+             if(!empty($profile_data['work_experiences'])){
+                echo implode(',', $profile_data['work_experiences']);
+             }
+             
+            ?>"> <br>
+
+            <label for="website">WEBSITE</label>
+            <input type="text" id="website" name="website" value="<?php echo $author[0]->website ?>"> <br>
+            
+            <input type="hidden" name="img_path" value="<?php echo $author[0]->image_path ?>"> 
+            
+            <label for="imagepath">IMAGE PATH:</label>
+            <input type="file" id="imagepath" name="imagepath"> <br>
+            
+            <input type="submit" name="btnUpdPro" value="Update profile"> <br>
+            <span class="message"><?php if(!empty($mess)){echo $mess;}?></span>
+        </form>
+    </div>
+</div>

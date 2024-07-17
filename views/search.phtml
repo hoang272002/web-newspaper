@@ -1,0 +1,191 @@
+
+<style>
+        .body1 {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .filters {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1;
+            max-width: 300px;
+        }
+        .section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .section label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .option input[type="radio"] {
+            accent-color: #007bff;
+        }
+        .data {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .paper {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .paper-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .paper-authors {
+            font-size: 1em;
+            color: #555;
+        }
+    </style>
+
+<div class="body1">
+    <div class="container">
+        <div style="display: block;">
+        <div class="section">
+                <label for="author">AUTHORS</label>
+                <div id="author-list" class="author-list">
+                    <div class="option">
+                        <input type="radio" id="all" name="author" value="do">
+                        <label for="author">All</label>
+                    </div>
+                    <!-- Author options will be inserted here by JavaScript -->
+                </div>
+                <div class="pagination" id="author-pagination">
+                    <button onclick="prevPage('author')" id="author-prev">Previous</button>
+                    <button onclick="nextPage('author')" id="author-next">Next</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <label for="conferences">CONFERENCES</label>
+                <div class="option">
+                    <input type="radio" id="all" name="conferences" value="do">
+                    <label for="conferences">All</label>
+                </div>
+                <?php 
+                    if($listConfer){
+                        foreach ($listConfer as $item){
+                            print "<div class=\"option\">";
+                            print "<input type=\"radio\" id=\"$item->conference_id\" name=\"conferences\" value=\"$item->abbreviation\">";
+                            print "<label for=\"conferences\">$item->abbreviation</label>";
+                            print "</div>";
+                        }
+                    }
+                ?>
+            </div>
+
+            <div class="section">
+                <label for="topic">TOPIC</label>
+                <div class="option">
+                    <input type="radio" id="all" name="topic" value="do">
+                    <label for="topic">All</label>
+                </div>
+                <?php 
+                    if($listTopic){
+                        foreach ($listTopic as $item){
+                            print "<div class=\"option\">";
+                            print "<input type=\"radio\" id=\"$item->topic_id\" name=\"topic\" value=\"$item->topic_name\">";
+                            print "<label for=\"topic\">$item->topic_name</label>";
+                            print "</div>";
+                        }
+                    } else {
+                        print "<h1>NO DATA</h1>";
+                    }
+                ?>
+            </div>
+        </div>
+        <div id="listPaperSearch" class="section">
+            <?php
+            if(!empty($listSearchPaper)){
+                foreach ($listSearchPaper as $paper){
+                    echo "<div class=\"paper\">";
+                    echo "<div class=\"paper-title\">Title: \"$paper->title\"</div>";
+                    echo "<div class=\"paper-authors\">Authors: \"$paper->author_string_list\"</div>";
+                    echo "</div>";
+                }
+            } else {
+                echo "NO DATA";
+            }
+            ?>
+        </div>
+    </div>
+</div>
+
+<script>
+        const authors = [
+            <?php 
+                if($listAuthor){
+                    foreach ($listAuthor as $item){
+                        echo "{ id: \"$item->user_id\", name: \"$item->full_name\" },";
+                    }
+                }
+            ?>
+        ];
+        const itemsPerPage = 5;
+        let currentPage = 1;
+
+        function displayAuthors() {
+            const authorList = document.getElementById('author-list');
+            authorList.innerHTML = `
+                <div class="option">
+                    <input type="radio" id="all" name="author" value="do">
+                    <label for="author">All</label>
+                </div>
+            `;
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedAuthors = authors.slice(start, end);
+
+            paginatedAuthors.forEach(author => {
+                authorList.innerHTML += `
+                    <div class="option">
+                        <input type="radio" id="${author.id}" name="author" value="${author.name}">
+                        <label for="author">${author.name}</label>
+                    </div>
+                `;
+            });
+
+            document.getElementById('author-prev').disabled = currentPage === 1;
+            document.getElementById('author-next').disabled = end >= authors.length;
+        }
+
+        function nextPage(section) {
+            currentPage++;
+            displayAuthors();
+        }
+
+        function prevPage(section) {
+            currentPage--;
+            displayAuthors();
+        }
+
+        displayAuthors();
+    </script>
