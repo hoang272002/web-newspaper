@@ -28,11 +28,23 @@
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        .section1{
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display:flex;
+            flex-wrap: wrap;
+            justify-content: center;
+             align-items: center;
+            
+        }
         .section label {
             font-weight: bold;
             display: block;
-            margin-bottom: 10px;
+           
             font-size: 1.1em;
+       
         }
         .option {
             display: flex;
@@ -76,12 +88,18 @@
                         <input type="radio" id="all" name="author" value="do">
                         <label for="author">All</label>
                     </div>
-                    <!-- Author options will be inserted here by JavaScript -->
+                    <?php 
+                        if($listAuthor){
+                            foreach ($listAuthor as $item){
+                                print "<div class=\"option\">";
+                                print "<input type=\"radio\" id=\"$item->user_id\" name=\"author\" value=\"$item->full_name\">";
+                                print "<label for=\"author\">$item->full_name</label>";
+                                print "</div>";
+                            }
+                        }
+                    ?>
                 </div>
-                <div class="pagination" id="author-pagination">
-                    <button onclick="prevPage('author')" id="author-prev">Previous</button>
-                    <button onclick="nextPage('author')" id="author-next">Next</button>
-                </div>
+                
             </div>
 
             <div class="section">
@@ -122,7 +140,7 @@
                 ?>
             </div>
         </div>
-        <div id="listPaperSearch" class="section">
+        <div id="listPaperSearch" class="section1">
             <?php
             if(!empty($listSearchPaper)){
                 foreach ($listSearchPaper as $paper){
@@ -139,53 +157,3 @@
     </div>
 </div>
 
-<script>
-        const authors = [
-            <?php 
-                if($listAuthor){
-                    foreach ($listAuthor as $item){
-                        echo "{ id: \"$item->user_id\", name: \"$item->full_name\" },";
-                    }
-                }
-            ?>
-        ];
-        const itemsPerPage = 5;
-        let currentPage = 1;
-
-        function displayAuthors() {
-            const authorList = document.getElementById('author-list');
-            authorList.innerHTML = `
-                <div class="option">
-                    <input type="radio" id="all" name="author" value="do">
-                    <label for="author">All</label>
-                </div>
-            `;
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const paginatedAuthors = authors.slice(start, end);
-
-            paginatedAuthors.forEach(author => {
-                authorList.innerHTML += `
-                    <div class="option">
-                        <input type="radio" id="${author.id}" name="author" value="${author.name}">
-                        <label for="author">${author.name}</label>
-                    </div>
-                `;
-            });
-
-            document.getElementById('author-prev').disabled = currentPage === 1;
-            document.getElementById('author-next').disabled = end >= authors.length;
-        }
-
-        function nextPage(section) {
-            currentPage++;
-            displayAuthors();
-        }
-
-        function prevPage(section) {
-            currentPage--;
-            displayAuthors();
-        }
-
-        displayAuthors();
-    </script>

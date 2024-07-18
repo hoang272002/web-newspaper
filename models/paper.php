@@ -1,4 +1,10 @@
 <?php
+require_once("vendor/elasticsearch/elasticsearch");
+$client = ClientBuilder::create()
+->setElasticCloudId('<cloud-id>')
+->setBasicAuthentication('<username>', '<password>')
+->build();
+
 class paperModel{
     function __construct() {
         $this->paper_id = "";
